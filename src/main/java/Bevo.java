@@ -1,6 +1,18 @@
 import java.util.Scanner;
 
 public class Bevo {
+    /** List of commands available to the user */
+    private static final String BYE_COMMAND = "bye";
+    private static final String LIST_COMMAND = "list";
+    private static final String MARK_COMMAND = "mark";
+    private static final String UNMARK_COMMAND = "unmark";
+    private static final String TODO_COMMAND = "todo";
+    private static final String DEADLINE_COMMAND = "deadline";
+    private static final String EVENT_COMMAND = "event";
+
+    /** Unknown message used when unable to determine times */
+    private static final String UNSPECIFIED_MESSAGE = "unspecified";
+
     /** Maximum number of tasks that can be created */
     private static final int MAX_TASKS = 100;
 
@@ -18,17 +30,24 @@ public class Bevo {
         while (true) {
             String input = scanner.nextLine();
 
-            if (input.toLowerCase().equals("bye")) {
+            if (input.toLowerCase().equals(BYE_COMMAND)) {
                 executeByeCommand();
                 break;
-            } else if (input.toLowerCase().equals("list")) {
+            } else if (input.toLowerCase().equals(LIST_COMMAND)) {
                 executeListCommand(tasks, taskCount);
-            } else if (input.toLowerCase().startsWith("mark")) {
+            } else if (input.toLowerCase().startsWith(MARK_COMMAND)) {
                 executeMarkCommand(tasks, input);
-            } else if (input.toLowerCase().startsWith("unmark")) {
+            } else if (input.toLowerCase().startsWith(UNMARK_COMMAND)) {
                 executeUnmarkCommand(tasks, input);
+            } else if (input.toLowerCase().startsWith(TODO_COMMAND)) {
+                taskCount = executeToDoCommand(tasks, taskCount, input);
+            } else if (input.toLowerCase().startsWith(DEADLINE_COMMAND)) {
+                taskCount = executeDeadlineCommand(tasks, taskCount, input);
+            } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
+                taskCount = executeEventCommand(tasks, taskCount, input);
             } else {
-                taskCount = executeAddCommand(tasks, taskCount, input);
+                tasks[taskCount] = new Todo(input);
+                printAddCommand(tasks[taskCount], ++taskCount);
             }
         }
 
@@ -36,21 +55,76 @@ public class Bevo {
     }
 
     /**
-     * Executes the add command by automatically adding tasks
-     * as the user inputs them.
+     * Executes the event command by creating an
+     * Event and setting its description and timeline.
+     * Then, it adds the Event to the task list.
      * 
      * @param tasks the array of all tasks
-     * @param taskCount the current count of all tasks
+     * @param taskCount the current count of the task list
      * @param input the user's input
-     * @return the new count of all tasks
+     * @return the updated task list's length
      */
-    private static int executeAddCommand(Task[] tasks, int taskCount, String input) {
-        tasks[taskCount] = new Task(input);
-        taskCount++;
-        System.out.println(HORIZONTAL_LINE);
-        System.out.println("\t  added: " + input);
-        System.out.println(HORIZONTAL_LINE + "\n");
+    private static int executeEventCommand(Task[] tasks, int taskCount, String input) {
+        String[] parts = input.substring(EVENT_COMMAND.length() + 1).split("/from|/to");
+        String description = parts[0].trim();
+        String from = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
+        String to = parts.length > 2 ? parts[2].trim() : UNSPECIFIED_MESSAGE;
+        tasks[taskCount] = new Event(description, from, to);
+
+        printAddCommand(tasks[taskCount], ++taskCount);
         return taskCount;
+    }
+
+    /**
+     * Executes the deadline command by creating a
+     * Deadline and setting its description and end date.
+     * Then, it adds the Deadline to the task list.
+     * 
+     * @param tasks the array of all tasks
+     * @param taskCount the current count of the task list
+     * @param input the user's input
+     * @return the updated task list's length
+     */
+    private static int executeDeadlineCommand(Task[] tasks, int taskCount, String input) {
+        String[] parts = input.substring(DEADLINE_COMMAND.length() + 1).split("/by", 2);
+        String description = parts[0].trim();
+        String by = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
+        tasks[taskCount] = new Deadline(description, by);
+
+        printAddCommand(tasks[taskCount], ++taskCount);
+        return taskCount;
+    }
+
+    /**
+     * Executes the todo command by creating a
+     * ToDo and setting its description.
+     * Then, it adds the Deadline to the task list.
+     * 
+     * @param tasks the array of all tasks
+     * @param taskCount the current count of the task list
+     * @param input the user's input
+     * @return the updated task list's length
+     */
+    private static int executeToDoCommand(Task[] tasks, int taskCount, String input) {
+        String description = input.substring(TODO_COMMAND.length() + 1);
+        tasks[taskCount] = new Todo(description);
+
+        printAddCommand(tasks[taskCount], ++taskCount);
+        return taskCount;
+    }
+
+    /**
+     * Prints out the adding confirmation to the user.
+     * 
+     * @param task a newly added Task
+     * @param taskCount the current count of the task list
+     */
+    private static void printAddCommand(Task task, int taskCount) {
+        System.out.println(HORIZONTAL_LINE);
+        System.out.println("\t Got it. I've added this task:");
+        System.out.println("\t  " + task);
+        System.out.println("\t Now you have " + taskCount + " tasks in the list.");
+        System.out.println(HORIZONTAL_LINE + "\n");
     }
 
     /**
@@ -92,7 +166,7 @@ public class Bevo {
      * their statuses.
      * 
      * @param tasks the array of all tasks
-     * @param taskCount the current count of all tasks
+     * @param taskCount the current count of the task list
      */
     private static void executeListCommand(Task[] tasks, int taskCount) {
         System.out.println(HORIZONTAL_LINE);
