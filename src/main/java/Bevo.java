@@ -16,7 +16,7 @@ public class Bevo {
 
         Scanner scanner = new Scanner(System.in);
 
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int numTasks = 0;
 
         while (true) {
@@ -33,8 +33,24 @@ public class Bevo {
                     System.out.println("\t  " + (i + 1) + ". " + tasks[i]);
                 }
                 System.out.println("\t_____________________________________________________\n");
+            } else if (input.toLowerCase().startsWith("mark")) {
+                String taskNumber = input.split(" ")[1];
+                int index = Integer.parseInt(taskNumber) - 1;
+                tasks[index].markAsDone();
+                System.out.println("\t_____________________________________________________");
+                System.out.println("\t  Nice! I've marked this task as done:");
+                System.out.println("\t\t  " + tasks[index]);
+                System.out.println("\t_____________________________________________________\n");
+            } else if (input.toLowerCase().startsWith("unmark")) {
+                String taskNumber = input.split(" ")[1];
+                int index = Integer.parseInt(taskNumber) - 1;
+                tasks[index].markAsNotDone();
+                System.out.println("\t_____________________________________________________");
+                System.out.println("\t  OK, I've marked this task as not done yet:");
+                System.out.println("\t\t  " + tasks[index]);
+                System.out.println("\t_____________________________________________________\n");
             } else {
-                tasks[numTasks] = input;
+                tasks[numTasks] = new Task(input);
                 numTasks++;
                 System.out.println("\t_____________________________________________________");
                 System.out.println("\t  added: " + input);
