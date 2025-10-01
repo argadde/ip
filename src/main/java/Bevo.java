@@ -23,12 +23,7 @@ public class Bevo {
         Scanner scanner = new Scanner(System.in);
 
         Task[] tasks = Storage.load();
-        int taskCount = 0;
-        for (Task task : tasks) {
-            if (task != null) {
-                taskCount++;
-            }
-        }
+        int taskCount = getTaskCount(tasks);
 
         while (true) {
             String input = scanner.nextLine();
@@ -64,6 +59,31 @@ public class Bevo {
         scanner.close();
     }
 
+    /**
+     * Returns the total number of tasks within the
+     * task list.
+     * @param tasks the task list
+     * @return the total number of tasks
+     */
+    private static int getTaskCount(Task[] tasks) {
+        int taskCount = 0;
+        for (Task task : tasks) {
+            if (task != null) {
+                taskCount++;
+            }
+        }
+        return taskCount;
+    }
+
+    /**
+     * Executes the delete command by removing the
+     * desired task from the task list.
+     * 
+     * @param tasks the array of all tasks
+     * @param taskCount the current count of the task list
+     * @param input the user's input
+     * @return the updated task list's length
+     */
     private static int executeDeleteCommand(Task[] tasks, int taskCount, String input) {
         String[] parts = input.split(" ");
         if (parts.length < 2) {
@@ -86,13 +106,24 @@ public class Bevo {
         tasks[taskCount - 1] = null;
         taskCount--;
 
+        printDeleteMessage(taskCount, removedTask);
+
+        return taskCount;
+    }
+
+    /**
+     * Prints out the delete message to the user for the 
+     * removed task.
+     * 
+     * @param taskCount the current count of the task list
+     * @param removedTask the removed task from the original task list
+     */
+    private static void printDeleteMessage(int taskCount, Task removedTask) {
         System.out.println(HORIZONTAL_LINE);
         System.out.println("\t Bevo has removed this task:");
         System.out.println("\t\t  " + removedTask);
         System.out.println("\t Now you have " + taskCount + " remaining tasks in the list.");
         System.out.println(HORIZONTAL_LINE + "\n");
-
-        return taskCount;
     }
 
     /**
