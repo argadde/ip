@@ -41,6 +41,14 @@ public class Task {
     }
 
     /**
+     * Displays a string that contains the metadata
+     * of the task to be added to the save file.
+     */
+    public String toSaveFileFormat() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Displays a String that contains the status
      * and the description of the Task.
      */

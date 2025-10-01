@@ -11,6 +11,15 @@ public class Todo extends Task {
     }
 
     /**
+     * Displays a string that contains the metadata
+     * of the todo to be added to the save file.
+     */
+    @Override
+    public String toSaveFileFormat() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Displays a String that contains the status and
      * description of the Todo.
      */

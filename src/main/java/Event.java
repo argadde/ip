@@ -22,6 +22,15 @@ public class Event extends Task {
     }
 
     /**
+     * Displays a string that contains the metadata
+     * of the event to be added to the save file.
+     */
+    @Override
+    public String toSaveFileFormat() {
+        return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + from + " | " + to;
+    }
+
+    /**
      * Displays a String that contains the status,
      * description, and event timeline of the Event.
      */
