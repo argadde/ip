@@ -209,6 +209,11 @@ public class Bevo {
         System.out.println(HORIZONTAL_LINE);
     }
 
+    /**
+     * Prints out an error message for invalid inputs.
+     * 
+     * @param message the error message to be displayed
+     */
     private static void printError(String message) {
         System.out.println(HORIZONTAL_LINE);
         System.out.println("\t  Oops! " + message);
