@@ -46,8 +46,7 @@ public class Bevo {
             } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
                 taskCount = executeEventCommand(tasks, taskCount, input);
             } else {
-                tasks[taskCount] = new Todo(input);
-                printAddCommand(tasks[taskCount], ++taskCount);
+                printError("Bevo does not understand the command.");
             }
         }
 
