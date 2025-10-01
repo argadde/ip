@@ -9,6 +9,7 @@ public class Bevo {
     private static final String TODO_COMMAND = "todo";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
+    private static final String DELETE_COMMAND = "delete";
 
     /** Unknown message used when unable to determine times */
     private static final String UNSPECIFIED_MESSAGE = "unspecified";
@@ -45,12 +46,45 @@ public class Bevo {
                 taskCount = executeDeadlineCommand(tasks, taskCount, input);
             } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
                 taskCount = executeEventCommand(tasks, taskCount, input);
+            } else if (input.toLowerCase().startsWith(DELETE_COMMAND)) {
+                taskCount = executeDeleteCommand(tasks, taskCount, input);
             } else {
                 printError("Bevo does not understand the command.");
             }
         }
 
         scanner.close();
+    }
+
+    private static int executeDeleteCommand(Task[] tasks, int taskCount, String input) {
+        String[] parts = input.split(" ");
+        if (parts.length < 2) {
+            printError("Bevo says that you need to specify a task number to delete.");
+            return taskCount;
+        }
+
+        int index = Integer.parseInt(parts[1]) - 1;
+
+        if (index < 0 || index >= taskCount) {
+            printError("Bevo says that task number does not exist.");
+            return taskCount;
+        }
+
+        Task removedTask = tasks[index];
+
+        for (int i = index; i < taskCount - 1; i++) {
+            tasks[i] = tasks[i + 1];
+        }
+        tasks[taskCount - 1] = null;
+        taskCount--;
+
+        System.out.println(HORIZONTAL_LINE);
+        System.out.println("\t Bevo has removed this task:");
+        System.out.println("\t\t  " + removedTask);
+        System.out.println("\t Now you have " + taskCount + " remaining tasks in the list.");
+        System.out.println(HORIZONTAL_LINE + "\n");
+
+        return taskCount;
     }
 
     /**
