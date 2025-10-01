@@ -15,6 +15,15 @@ public class Deadline extends Task {
         super(description);
         this.by = by;
     }
+    
+    /**
+     * Displays a string that contains the metadata
+     * of the deadline to be added to the save file.
+     */
+    @Override
+    public String toSaveFileFormat() {
+        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + by;
+    }
 
     /**
      * Displays a String that contains the status,

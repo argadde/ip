@@ -14,9 +14,6 @@ public class Bevo {
     /** Unknown message used when unable to determine times */
     private static final String UNSPECIFIED_MESSAGE = "unspecified";
 
-    /** Maximum number of tasks that can be created */
-    private static final int MAX_TASKS = 100;
-
     /** Horizontal line that is used when creating boxes during printing */
     private static final String HORIZONTAL_LINE = "\t_____________________________________________________";
 
@@ -25,8 +22,13 @@ public class Bevo {
 
         Scanner scanner = new Scanner(System.in);
 
-        Task[] tasks = new Task[MAX_TASKS];
+        Task[] tasks = Storage.load();
         int taskCount = 0;
+        for (Task task : tasks) {
+            if (task != null) {
+                taskCount++;
+            }
+        }
 
         while (true) {
             String input = scanner.nextLine();
@@ -38,16 +40,22 @@ public class Bevo {
                 executeListCommand(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(MARK_COMMAND)) {
                 executeMarkCommand(tasks, input);
+                Storage.save(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(UNMARK_COMMAND)) {
                 executeUnmarkCommand(tasks, input);
+                Storage.save(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(TODO_COMMAND)) {
                 taskCount = executeToDoCommand(tasks, taskCount, input);
+                Storage.save(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(DEADLINE_COMMAND)) {
                 taskCount = executeDeadlineCommand(tasks, taskCount, input);
+                Storage.save(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
                 taskCount = executeEventCommand(tasks, taskCount, input);
+                Storage.save(tasks, taskCount);
             } else if (input.toLowerCase().startsWith(DELETE_COMMAND)) {
                 taskCount = executeDeleteCommand(tasks, taskCount, input);
+                Storage.save(tasks, taskCount);
             } else {
                 printError("Bevo does not understand the command.");
             }
