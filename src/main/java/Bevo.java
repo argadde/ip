@@ -65,8 +65,16 @@ public class Bevo {
      * @return the updated task list's length
      */
     private static int executeEventCommand(Task[] tasks, int taskCount, String input) {
-        String[] parts = input.substring(EVENT_COMMAND.length() + 1).split("/from|/to");
+        String[] parts = input.length() > EVENT_COMMAND.length() + 1
+                ? input.substring(EVENT_COMMAND.length() + 1).split("/from|/to")
+                : new String[]{""};
+
         String description = parts[0].trim();
+        if (description.isEmpty()) {
+            printError("Bevo says an event must have a description.");
+            return taskCount;
+        }
+
         String from = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
         String to = parts.length > 2 ? parts[2].trim() : UNSPECIFIED_MESSAGE;
         tasks[taskCount] = new Event(description, from, to);
@@ -86,8 +94,16 @@ public class Bevo {
      * @return the updated task list's length
      */
     private static int executeDeadlineCommand(Task[] tasks, int taskCount, String input) {
-        String[] parts = input.substring(DEADLINE_COMMAND.length() + 1).split("/by", 2);
+        String[] parts = input.length() > DEADLINE_COMMAND.length() + 1
+                ? input.substring(DEADLINE_COMMAND.length() + 1).split("/by", 2)
+                : new String[]{""};
+
         String description = parts[0].trim();
+        if (description.isEmpty()) {
+            printError("Bevo says a deadline must have a description!");
+            return taskCount;
+        }
+
         String by = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
         tasks[taskCount] = new Deadline(description, by);
 
@@ -106,7 +122,15 @@ public class Bevo {
      * @return the updated task list's length
      */
     private static int executeToDoCommand(Task[] tasks, int taskCount, String input) {
-        String description = input.substring(TODO_COMMAND.length() + 1);
+        String description = input.length() > TODO_COMMAND.length() + 1
+                ? input.substring(TODO_COMMAND.length() + 1).trim()
+                : "";
+        
+        if (description.isEmpty()) {
+            printError("Bevo says a todo must have a description.");
+            return taskCount;
+        }
+        
         tasks[taskCount] = new Todo(description);
 
         printAddCommand(tasks[taskCount], ++taskCount);
@@ -184,6 +208,12 @@ public class Bevo {
         System.out.println(HORIZONTAL_LINE);
         System.out.println("\t  Bye. Hope to see you again soon!");
         System.out.println(HORIZONTAL_LINE);
+    }
+
+    private static void printError(String message) {
+        System.out.println(HORIZONTAL_LINE);
+        System.out.println("\t  Oops! " + message);
+        System.out.println(HORIZONTAL_LINE + "\n");
     }
 
     /**
