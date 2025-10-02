@@ -23,27 +23,31 @@ public class Parser {
      * @return
      */
     public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) {
-        if (input.toLowerCase().equals(BYE_COMMAND)) {
-            ui.printByeCommand();
-            return true;
-        } else if (input.toLowerCase().equals(LIST_COMMAND)) {
-            ui.printListCommand(tasks);
-        } else if (input.toLowerCase().startsWith(MARK_COMMAND)) {
-            executeMarkCommand(tasks, input, ui, storage);
-        } else if (input.toLowerCase().startsWith(UNMARK_COMMAND)) {
-            executeUnmarkCommand(tasks, input, ui, storage);
-        } else if (input.toLowerCase().startsWith(TODO_COMMAND)) {
-            executeTodoCommand(tasks, input, ui, storage);
-        } else if (input.toLowerCase().startsWith(DEADLINE_COMMAND)) {
-            executeDeadlineCommand(tasks, input, ui, storage);
-        } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
-            executeEventCommand(tasks, input, ui, storage);
-        } else if (input.toLowerCase().startsWith(DELETE_COMMAND)) {
-            executeDeleteCommand(tasks, input, ui, storage);
-        } else if (input.startsWith(FIND_COMMAND)) {
-            executeFindCommand(tasks, input, ui);
-        } else {
-            ui.printError("Bevo does not understand the command.");
+        try {
+            if (input.toLowerCase().equals(BYE_COMMAND)) {
+                ui.printByeCommand();
+                return true;
+            } else if (input.toLowerCase().equals(LIST_COMMAND)) {
+                ui.printListCommand(tasks);
+            } else if (input.toLowerCase().startsWith(MARK_COMMAND)) {
+                executeMarkCommand(tasks, input, ui, storage);
+            } else if (input.toLowerCase().startsWith(UNMARK_COMMAND)) {
+                executeUnmarkCommand(tasks, input, ui, storage);
+            } else if (input.toLowerCase().startsWith(TODO_COMMAND)) {
+                executeTodoCommand(tasks, input, ui, storage);
+            } else if (input.toLowerCase().startsWith(DEADLINE_COMMAND)) {
+                executeDeadlineCommand(tasks, input, ui, storage);
+            } else if (input.toLowerCase().startsWith(EVENT_COMMAND)) {
+                executeEventCommand(tasks, input, ui, storage);
+            } else if (input.toLowerCase().startsWith(DELETE_COMMAND)) {
+                executeDeleteCommand(tasks, input, ui, storage);
+            } else if (input.startsWith(FIND_COMMAND)) {
+                executeFindCommand(tasks, input, ui);
+            } else {
+                throw new BevoException("Bevo does not understand the command.");
+            }
+        } catch (BevoException e) {
+            ui.printError(e.getMessage());
         }
 
         return false;
@@ -92,18 +96,21 @@ public class Parser {
      * @param ui the object that communicates with the user
      * @param storage the save file to be updated
      */
-    private static void executeDeleteCommand(TaskList tasks, String input, Ui ui, Storage storage) {
+    private static void executeDeleteCommand(TaskList tasks, String input, Ui ui, Storage storage) throws BevoException {
         String[] parts = input.split(" ");
         if (parts.length < 2) {
-            ui.printError("Bevo says that you need to specify a task number to delete.");
-            return;
+            throw new BevoException("Bevo says that you need to specify a task number to delete.");
         }
 
-        int index = Integer.parseInt(parts[1]) - 1;
+        int index;
+        try {
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new BevoException("Bevo says that is not a number.");
+        }
 
         if (index < 0 || index >= tasks.size()) {
-            ui.printError("Bevo says that task number does not exist.");
-            return;
+            throw new BevoException("Bevo says that task number does not exist.");
         }
 
         Task removedTask = tasks.remove(index);
@@ -121,21 +128,20 @@ public class Parser {
      * @param ui the object that communicates with the user
      * @param storage the save file to be updated
      */
-    private static void executeEventCommand(TaskList tasks, String input, Ui ui, Storage storage) {
+    private static void executeEventCommand(TaskList tasks, String input, Ui ui, Storage storage) throws BevoException {
         String[] parts = input.length() > EVENT_COMMAND.length() + 1
                 ? input.substring(EVENT_COMMAND.length() + 1).split("/from|/to")
                 : new String[]{""};
 
         String description = parts[0].trim();
         if (description.isEmpty()) {
-            ui.printError("Bevo says an event must have a description.");
-            return;
+            throw new BevoException("Bevo says an event must have a description.");
         }
 
         String from = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
         String to = parts.length > 2 ? parts[2].trim() : UNSPECIFIED_MESSAGE;
         Task event = new Event(description, from, to);
-
+        tasks.add(event);
         ui.printAddCommand(event, tasks.size());
         storage.save(tasks.getAll());
     }
@@ -150,15 +156,14 @@ public class Parser {
      * @param ui the object that communicates with the user
      * @param storage the save file to be updated
      */
-    private static void executeDeadlineCommand(TaskList tasks, String input, Ui ui, Storage storage) {
+    private static void executeDeadlineCommand(TaskList tasks, String input, Ui ui, Storage storage) throws BevoException {
         String[] parts = input.length() > DEADLINE_COMMAND.length() + 1
                 ? input.substring(DEADLINE_COMMAND.length() + 1).split("/by", 2)
                 : new String[]{""};
 
         String description = parts[0].trim();
         if (description.isEmpty()) {
-            ui.printError("Bevo says a deadline must have a description!");
-            return;
+            throw new BevoException("Bevo says a deadline must have a description!");
         }
 
         String by = parts.length > 1 ? parts[1].trim() : UNSPECIFIED_MESSAGE;
@@ -178,14 +183,13 @@ public class Parser {
      * @param ui the object that communicates with the user
      * @param storage the save file to be updated
      */
-    private static void executeTodoCommand(TaskList tasks, String input, Ui ui, Storage storage) {
+    private static void executeTodoCommand(TaskList tasks, String input, Ui ui, Storage storage) throws BevoException {
         String description = input.length() > TODO_COMMAND.length() + 1
                 ? input.substring(TODO_COMMAND.length() + 1).trim()
                 : "";
         
         if (description.isEmpty()) {
-            ui.printError("Bevo says a todo must have a description.");
-            return;
+            throw new BevoException("Bevo says a todo must have a description.");
         }
         
         Task todo = new Todo(description);
@@ -236,14 +240,13 @@ public class Parser {
      * @param input the user's input
      * @param ui the object that communicates with the user
      */
-    private static void executeFindCommand(TaskList tasks, String input, Ui ui) {
+    private static void executeFindCommand(TaskList tasks, String input, Ui ui) throws BevoException {
         String keyword = input.length() > FIND_COMMAND.length() + 1
             ? input.substring(FIND_COMMAND.length() + 1).trim()
             : "";
         
         if (keyword.isEmpty()) {
-            ui.printError("Bevo says that a keyword must be provided.");
-            return;
+            throw new BevoException("Bevo says that a keyword must be provided.");
         }
 
         TaskList matches = tasks.findAll(keyword);
