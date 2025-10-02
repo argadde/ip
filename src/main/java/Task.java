@@ -16,6 +16,10 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     /**
      * Determines completion icom based on status
      * to be used in the toString() method when displayed.

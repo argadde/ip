@@ -8,6 +8,7 @@ public class Parser {
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
     private static final String DELETE_COMMAND = "delete";
+    private static final String FIND_COMMAND = "find";
 
     /** Unknown message used when unable to determine times */
     private static final String UNSPECIFIED_MESSAGE = "unspecified";
@@ -30,6 +31,8 @@ public class Parser {
             executeEventCommand(tasks, input, ui, storage);
         } else if (input.toLowerCase().startsWith(DELETE_COMMAND)) {
             executeDeleteCommand(tasks, input, ui, storage);
+        } else if (input.startsWith(FIND_COMMAND)) {
+            executeFindCommand(tasks, input, ui);
         } else {
             ui.printError("Bevo does not understand the command.");
         }
@@ -214,5 +217,19 @@ public class Parser {
         tasks.get(index).markAsDone();
         ui.printMarkCommand(tasks.get(index));
         storage.save(tasks.getAll());
+    }
+
+    private static void executeFindCommand(TaskList tasks, String input, Ui ui) {
+        String keyword = input.length() > FIND_COMMAND.length() + 1
+            ? input.substring(FIND_COMMAND.length() + 1).trim()
+            : "";
+        
+        if (keyword.isEmpty()) {
+            ui.printError("Bevo says that a keyword must be provided.");
+            return;
+        }
+
+        TaskList matches = tasks.findAll(keyword);
+        ui.printFindCommand(matches);
     }
 }

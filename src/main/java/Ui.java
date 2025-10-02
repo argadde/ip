@@ -110,4 +110,16 @@ public class Ui {
         }
         System.out.println(HORIZONTAL_LINE + "\n");
     }
+
+    public void printFindCommand(TaskList matches) {
+        System.out.println(HORIZONTAL_LINE);
+        if (matches.size() == 0) {
+            System.out.println("\t  Bevo did not find any matching tasks.");
+        } else {
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println("\t  " + (i + 1) + ". " + matches.get(i));
+            }
+        }
+        System.out.println(HORIZONTAL_LINE + "\n");
+    }
 }
