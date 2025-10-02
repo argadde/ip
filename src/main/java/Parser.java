@@ -201,7 +201,7 @@ public class Parser {
     /**
      * Executes the unmark command by setting the user-requested
      * task to incomplete.
-     * 
+     *
      * @param tasks the list of all tasks
      * @param input the user's input
      * @param ui the object that communicates with the user
@@ -218,7 +218,7 @@ public class Parser {
     /**
      * Executes the mark command by setting the user-requested
      * task to complete.
-     * 
+     *
      * @param tasks the list of all tasks
      * @param input the user's input
      * @param ui the object that communicates with the user
@@ -235,7 +235,7 @@ public class Parser {
     /**
      * Executes the find command by listing all the tasks
      * with the specified keyword in the input.
-     * 
+     *
      * @param tasks the list of all tasks
      * @param input the user's input
      * @param ui the object that communicates with the user
