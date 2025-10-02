@@ -6,8 +6,14 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Storage {
+    /** File path of the save file. */
     private String filePath;
 
+    /**
+     * Constuctor to build the storage with the specified file path.
+     * 
+     * @param filePath the file path of the save file
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }

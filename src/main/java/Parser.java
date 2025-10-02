@@ -13,6 +13,15 @@ public class Parser {
     /** Unknown message used when unable to determine times */
     private static final String UNSPECIFIED_MESSAGE = "unspecified";
     
+    /**
+     * Parses the user-specified command and executes it accordingly.
+     * 
+     * @param input the user's input
+     * @param tasks the list of all tasks
+     * @param ui the object that communicates with the user
+     * @param storage the save file to be updated
+     * @return
+     */
     public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) {
         if (input.toLowerCase().equals(BYE_COMMAND)) {
             ui.printByeCommand();
@@ -219,6 +228,14 @@ public class Parser {
         storage.save(tasks.getAll());
     }
 
+    /**
+     * Executes the find command by listing all the tasks
+     * with the specified keyword in the input.
+     * 
+     * @param tasks the list of all tasks
+     * @param input the user's input
+     * @param ui the object that communicates with the user
+     */
     private static void executeFindCommand(TaskList tasks, String input, Ui ui) {
         String keyword = input.length() > FIND_COMMAND.length() + 1
             ? input.substring(FIND_COMMAND.length() + 1).trim()

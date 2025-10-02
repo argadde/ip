@@ -16,6 +16,11 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns the description of the task.
+     * 
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }

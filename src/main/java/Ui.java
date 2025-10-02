@@ -4,8 +4,12 @@ public class Ui {
     /** Horizontal line that is used when creating boxes during printing */
     private static final String HORIZONTAL_LINE = "\t_____________________________________________________";
     
+    /** Scanner to retrieve input. */
     private Scanner scanner;
 
+    /**
+     * Constructor to set up the scanner for input.
+     */
     public Ui() {
         scanner = new Scanner(System.in);
     }
@@ -57,6 +61,11 @@ public class Ui {
         System.out.println(HORIZONTAL_LINE + "\n");
     }
 
+    /**
+     * Prints out the marking confirmation to the user.
+     * 
+     * @param task the task that was marked
+     */
     public void printMarkCommand(Task task) {
         System.out.println(HORIZONTAL_LINE);
         System.out.println("\t  Nice! I've marked this task as done:");
@@ -64,6 +73,11 @@ public class Ui {
         System.out.println(HORIZONTAL_LINE + "\n");
     }
 
+    /**
+     * Prints out the unmarking confirmation to the user.
+     * 
+     * @param task the task that was unmarked
+     */
     public void printUnmarkCommand(Task task) {
         System.out.println(HORIZONTAL_LINE);
         System.out.println("\t  OK, I've marked this task as not done yet:");
@@ -100,8 +114,7 @@ public class Ui {
      * Executes the list command by listing all the tasks and
      * their statuses.
      * 
-     * @param tasks the array of all tasks
-     * @param taskCount the current count of the task list
+     * @param tasks the list of all tasks
      */
     public void printListCommand(TaskList tasks) {
         System.out.println(HORIZONTAL_LINE);
@@ -111,6 +124,11 @@ public class Ui {
         System.out.println(HORIZONTAL_LINE + "\n");
     }
 
+    /**
+     * Prints all the matching list of tasks from a specified keyword.
+     * 
+     * @param matches the matching list of tasks
+     */
     public void printFindCommand(TaskList matches) {
         System.out.println(HORIZONTAL_LINE);
         if (matches.size() == 0) {
