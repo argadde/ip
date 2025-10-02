@@ -248,7 +248,6 @@ public class Parser {
         if (keyword.isEmpty()) {
             throw new BevoException("Bevo says that a keyword must be provided.");
         }
-
         TaskList matches = tasks.findAll(keyword);
         ui.printFindCommand(matches);
     }
